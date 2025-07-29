@@ -23,11 +23,6 @@ A reinforcement learning environment for training humanoid robots to climb walls
    pip install -r requirements.txt
    ```
 
-3. **Install the package**:
-   ```bash
-   pip install -e .
-   ```
-
 ## Usage
 
 ### Training
@@ -49,7 +44,7 @@ Test a trained model:
 python train.py HumanoidClimb-v0 PPO -s path/to/model.zip
 ```
 
-Run the sequential stance demo (requires pre-trained models):
+Run the sequential stance demo (uses your trained model):
 ```bash
 python climb.py
 ```
@@ -57,21 +52,6 @@ python climb.py
 Interactive manual control:
 ```bash
 python test.py
-```
-
-## Project Structure
-
-```
-humanoid_climb/
-├── humanoid_climb/          # Main package
-│   ├── env/                 # Environment implementation
-│   ├── assets/              # Robot and world assets
-│   └── stances/             # Climbing stance definitions
-├── train.py                 # Training script
-├── climb.py                 # Demo script
-├── test.py                  # Manual control script
-├── requirements.txt         # Dependencies
-└── setup.py                # Package setup
 ```
 
 ## Environment Details
@@ -100,18 +80,7 @@ The environment uses predefined stances that specify target positions for each e
 - Gymnasium for RL environment interface
 - Stable-Baselines3 for RL algorithms
 - Weights & Biases for experiment tracking (optional)
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
 ---
-
-# Technical Deep Dive
 
 ## 🏗️ Core Architecture Components
 
@@ -340,7 +309,7 @@ model = sb.PPO.load(path_to_model, env=env)
 
 ### **Training Configuration**
 
-**Scale**: 25 million timesteps over ~4 hours
+**Scale**: 25 million timesteps over ~6 hours
 **Hardware**: CPU-optimized (1,800+ iterations/second)
 **Memory**: Efficient multi-process architecture
 
@@ -360,63 +329,3 @@ model = sb.PPO.load(path_to_model, env=env)
 3. **Contact management**: Grip force control
 4. **Multi-limb coordination**: Full climbing sequences
 
-## 🎓 Educational Value & Research Contributions
-
-### **Technical Learning Outcomes**
-
-1. **Physics-Based RL**: Complex continuous control in realistic environments
-2. **Multi-Stage Learning**: Curriculum design for complex behaviors
-3. **Parallel Training**: Scalable RL system architecture
-4. **Reward Engineering**: Multi-objective optimization techniques
-
-### **Research Applications**
-
-- **Robotics**: Real-world humanoid locomotion transfer
-- **Motion Planning**: Complex manipulation task decomposition
-- **Human Movement**: Biomechanical climbing analysis
-- **AI Safety**: Controlled learning in safety-critical applications
-
-## 🔍 System Robustness & Validation
-
-### **State Management**
-- **Deterministic physics**: Reproducible experiment results
-- **Checkpoint system**: Training continuation and model comparison
-- **State file persistence**: Stance progression validation
-
-### **Performance Metrics**
-- **Multi-component rewards**: Detailed behavior analysis
-- **Success rate tracking**: Task completion measurement
-- **Episode length analysis**: Efficiency assessment
-- **Real-time monitoring**: Live training feedback
-
-## 🎮 Visual Training & Testing
-
-### **Seeing Your Humanoid in Action**
-
-The project supports both headless training (fast) and visual testing (interactive):
-
-**For Visual Feedback**:
-```bash
-# Test your trained model with PyBullet GUI
-python train.py HumanoidClimb-v0 PPO -s models/your_model/best_model.zip
-
-# Interactive manual control with sliders
-python test.py
-
-# Full climbing demo with multiple stance models
-python climb.py
-```
-
-**Training Modes**:
-- **Multi-worker training**: Faster, no visuals (`-w 4`)
-- **Single-worker training**: Slower, can add visuals (`-w 1`)
-- **Testing mode**: Always visual for performance evaluation
-
-### **Expected Training Timeline**
-
-- **Total Duration**: ~4 hours for complete training (25M timesteps)
-- **Visible Progress**: Reward improvements from -170 to -57 (65% better)
-- **Checkpoints**: Best models saved every 500 evaluation steps
-- **Monitoring**: Real-time progress via Weights & Biases dashboard
-
-This comprehensive system demonstrates the integration of modern RL techniques with complex physics simulation to achieve sophisticated robotic behaviors, providing both educational value and research contributions to the field of embodied artificial intelligence.

@@ -28,13 +28,13 @@ pause = False
 
 STANCE_TOLERANCE = 700
 ROOT = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = ["/models/1_10_9_n_n.zip",
-              "/models/2_10_9_2_n.zip",
-              "/models/3_10_9_2_1.zip",
-              "/models/4_14_13_n_n_run29.zip"]
 
+# Use your actual trained model
+MODEL_PATH = "models/l9p8edij/models/best_model.zip"
 
-MODELS = [PPO.load(ROOT+MODEL_PATH[i], env=env) for i in range(len(MODEL_PATH))]
+# For now, use the same model for all stances
+# (In the original setup, different models were trained for each stance)
+MODELS = [PPO.load(MODEL_PATH, env=env) for i in range(4)]
 CUR_MODEL = 0
 REWARDS = [0 for i in range(len(MODELS))]
 STEPS = [0 for i in range(len(MODELS))]
