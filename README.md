@@ -82,7 +82,7 @@ The environment uses predefined stances that specify target positions for each e
 - Weights & Biases for experiment tracking (optional)
 ---
 
-## 🏗️ Core Architecture Components
+## Core Architecture Components
 
 ### 1. **Physics Simulation Layer (PyBullet)**
 
@@ -142,7 +142,7 @@ total_reward = (
 )
 ```
 
-## 🎯 Multi-Stage Learning System
+## Multi-Stage Learning System
 
 ### **Stance-Based Progression**
 
@@ -172,7 +172,7 @@ action_override=[1, 1, 1, -1]           # Forced actions for stability
 exclude_targets=[[10], [9], [2, 6], [1, 5]]  # Forbidden positions
 ```
 
-## 🧠 Reinforcement Learning Implementation
+## Reinforcement Learning Implementation
 
 ### **Algorithm Choice: PPO (Proximal Policy Optimization)**
 
@@ -212,7 +212,7 @@ vec_env = SubprocVecEnv(
 - **Diverse experience**: Multiple simultaneous explorations
 - **Stability**: Reduces correlation in training data
 
-## 📊 Training Infrastructure & Monitoring
+## Training Infrastructure & Monitoring
 
 ### **Weights & Biases Integration**
 
@@ -258,7 +258,7 @@ class CustomCallback(BaseCallback):
 - **Best model saving**: Automatic checkpoint management
 - **Success rate tracking**: Task completion metrics
 
-## 🔧 Development & Testing Tools
+## Development & Testing Tools
 
 ### **Interactive Testing (`test.py`)**
 
@@ -284,7 +284,7 @@ model = sb.PPO.load(path_to_model, env=env)
 - **Success rate tracking**: Performance monitoring
 - **Interactive controls**: Pause/reset functionality
 
-## 📦 Library Ecosystem & Dependencies
+## Library Ecosystem & Dependencies
 
 ### **Core RL Framework**
 - **Stable-Baselines3 (2.0.0+)**: Modern RL algorithms with PyTorch backend
