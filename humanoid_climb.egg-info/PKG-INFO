@@ -1,0 +1,26 @@
+Metadata-Version: 2.4
+Name: humanoid_climb
+Version: 0.1.0
+Summary: Humanoid Climbing Reinforcement Learning Environment
+Author: Humanoid Climb Team
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.8
+Requires-Dist: gymnasium>=0.29.0
+Requires-Dist: numpy>=1.21.0
+Requires-Dist: pybullet>=3.2.5
+Requires-Dist: stable-baselines3>=2.0.0
+Requires-Dist: torch>=1.13.0
+Requires-Dist: wandb>=0.15.0
+Requires-Dist: tensorboard>=2.13.0
+Dynamic: author
+Dynamic: classifier
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
