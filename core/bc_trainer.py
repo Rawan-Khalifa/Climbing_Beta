@@ -28,7 +28,7 @@ class BehavioralCloningTrainer:
         self.demonstrations_dir = Path(demonstrations_dir)
         # Initialize environment for training
         motion_path = [[10, 9, -1, -1]]  # Default stance
-        motion_exclude_targets = [[]]     # No excluded targets
+        motion_exclude_targets = [[[], [], [], []]]  # Empty exclusion list for each effector
         self.env = HumanoidClimbEnv(motion_path=motion_path, motion_exclude_targets=motion_exclude_targets)
         self.demonstrations = self._load_all_demonstrations()
         
@@ -135,9 +135,16 @@ class BehavioralCloningTrainer:
     def create_guided_ppo_trainer(self, bc_policy_path=None):
         """Create PPO trainer with behavioral cloning guidance"""
         
+        # Define default motion path for training
+        motion_path = [[10, 9, 2, 1]]  # Single stance configuration
+        motion_exclude_targets = [[[], [], [], []]]  # Empty exclusion list for each effector
+        
         # Create vectorized environment
         def make_env():
-            return HumanoidClimbEnv()
+            return HumanoidClimbEnv(
+                motion_path=motion_path,
+                motion_exclude_targets=motion_exclude_targets
+            )
         
         # Use multiple environments for better sample efficiency
         vec_env = SubprocVecEnv([make_env for _ in range(4)])
