@@ -20,14 +20,14 @@ class PoseToStateActionConverter:
     def __init__(self):
         # Initialize environment for state-action conversion
         # Use a simple climbing path for demonstration conversion
-        motion_path = [10, 9, 2, 1]  # Example: hand1, hand2, foot1, foot2
-        motion_exclude_targets = [[10], [9], [2, 6], [1, 5]]  # Exclude certain targets
+        motion_path = [[10, 9, 2, 1]]  # List of stances, each stance has 4 positions (2 hands, 2 feet)
+        motion_exclude_targets = [[[], [], [], []]]  # List of excluded targets per effector per stance
         
         self.env = HumanoidClimbEnv(
             motion_path=motion_path,
             motion_exclude_targets=motion_exclude_targets
         )
-        self.robot = self.env.robot
+        self.robot = self.env.robot  # This is actually the humanoid
         
         # Mediapipe pose landmark indices
         self.landmark_indices = {
@@ -149,16 +149,19 @@ class PoseToStateActionConverter:
         state = obs.copy()
         
         # Map calculated angles to humanoid joint positions
-        # The exact mapping depends on your humanoid's joint structure
+        # The humanoid has 17 actuated joints + 4 grasp actions = 21 total
+        # We map the major body joints from the pose estimation
         angle_mapping = {
-            'left_shoulder': 0,
-            'right_shoulder': 1,
-            'left_elbow': 2,
-            'right_elbow': 3,
-            'left_hip': 4,
-            'right_hip': 5,
-            'left_knee': 6,
-            'right_knee': 7,
+            'left_shoulder': 0,    # Left shoulder
+            'right_shoulder': 1,   # Right shoulder
+            'left_elbow': 2,       # Left elbow
+            'right_elbow': 3,      # Right elbow
+            'left_hip': 4,         # Left hip
+            'right_hip': 5,        # Right hip
+            'left_knee': 6,        # Left knee
+            'right_knee': 7,       # Right knee
+            # Additional joints filled with neutral values (index 8-20)
+            # These could be: spine, neck, ankles, wrists, etc.
         }
         
         for joint_name, angle in joint_angles.items():
@@ -166,27 +169,36 @@ class PoseToStateActionConverter:
                 joint_idx = angle_mapping[joint_name]
                 if joint_idx < len(state):
                     # Normalize angle to [-1, 1] range
-                    normalized_angle = (angle - np.pi/2) / np.pi
+                    # MediaPipe angles are in radians [0, π]
+                    normalized_angle = (angle - np.pi/2) / (np.pi/2)
+                    normalized_angle = np.clip(normalized_angle, -1.0, 1.0)
                     state[joint_idx] = normalized_angle
         
         return state
     
     def generate_action_from_state_transition(self, current_state, next_state):
         """Generate action that would transition from current to next state"""
-        # Simple approach: action is proportional to state difference
+        # Calculate state difference
         state_diff = next_state - current_state
         
-        # Scale to action space (assuming actions are joint torques)
-        action = np.clip(state_diff * 10.0, -1.0, 1.0)
+        # Apply scaling with smoother transition
+        # Use hyperbolic tangent for smooth scaling instead of hard clipping
+        action = np.tanh(state_diff * 5.0)  # Scale factor reduced from 10 to 5 for smoother transitions
         
-        # Ensure action matches environment's action space
-        if len(action) > self.env.action_space.shape[0]:
-            action = action[:self.env.action_space.shape[0]]
-        elif len(action) < self.env.action_space.shape[0]:
-            # Pad with zeros
-            padded_action = np.zeros(self.env.action_space.shape[0])
+        # Ensure action matches environment's action space (21 dimensions)
+        action_space_size = self.env.action_space.shape[0]
+        
+        if len(action) > action_space_size:
+            # Truncate if action is too long
+            action = action[:action_space_size]
+        elif len(action) < action_space_size:
+            # Pad with zeros if action is too short
+            padded_action = np.zeros(action_space_size)
             padded_action[:len(action)] = action
             action = padded_action
+        
+        # Final clipping to ensure actions are in valid range
+        action = np.clip(action, -1.0, 1.0)
         
         return action
     
